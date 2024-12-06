@@ -14,13 +14,13 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    'https://portal-cpms1.netlify.app', // Replace with your deployed backend URL
-    'http://localhost:5173', // Allow local development
+    'https://portal-cpms1.netlify.app', 
+    'http://localhost:5173', 
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (e.g., mobile apps, Postman, or curl)
+      
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -28,17 +28,17 @@ app.use(cors({
             callback(new Error('CORS policy does not allow this origin.'));
         }
     },
-    credentials: true, // Allow cookies or Authorization headers
+    credentials: true, 
 }));
 
-// Handle preflight requests (OPTIONS method)
+
 app.options('*', cors());
 
-// Middleware to parse JSON
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// File uploads
+
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
