@@ -14,7 +14,7 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    'https://appcollege-jsbz09o3.b4a.run', // Replace with your deployed backend URL
+    'https://portal-cpms1.netlify.app', // Replace with your deployed backend URL
     'http://localhost:5173', // Allow local development
 ];
 
