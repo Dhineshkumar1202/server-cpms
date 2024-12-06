@@ -45,7 +45,7 @@ const studentRoutes = require('./routes/studentRoute');
 const { protect } = require('./middlewares/authMiddleware');
 
 // API Test Route
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
