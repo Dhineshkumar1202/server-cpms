@@ -13,35 +13,35 @@ dotenv.config();
 const app = express();
 
 // CORS configuration
-
-
 const allowedOrigins = [
-    'https://appcollege-jsbz09o3.b4a.run/', 
-    'http://localhost:5173', 
+    'https://appcollege-jsbz09o3.b4a.run', // Replace with your deployed backend URL
+    'http://localhost:5173', // Allow local development
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g., mobile apps, Postman, or curl)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.error(`CORS error: origin ${origin} not allowed`);
+            callback(new Error('CORS policy does not allow this origin.'));
         }
-        return callback(null, true);
     },
-    credentials: true, // Allow cookies if needed
+    credentials: true, // Allow cookies or Authorization headers
 }));
 
+// Handle preflight requests (OPTIONS method)
+app.options('*', cors());
 
 // Middleware to parse JSON
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-
-
+// File uploads
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const upload = multer({ dest: uploadDir });
@@ -62,58 +62,57 @@ const { protect } = require('./middlewares/authMiddleware');
 
 // API Test Route
 app.get('/', (req, res) => {
-  res.send('API is running...');
+    res.send('API is running...');
 });
 
-
+// File upload API
 app.post('/api/upload', upload.single('file'), (req, res) => {
- 
-  if (req.file) {
-    res.status(200).json({
-      message: 'File uploaded successfully',
-      file: req.file, 
-    });
-  } else {
-    res.status(400).json({
-      message: 'No file uploaded',
-    });
-  }
+    if (req.file) {
+        res.status(200).json({
+            message: 'File uploaded successfully',
+            file: req.file,
+        });
+    } else {
+        res.status(400).json({
+            message: 'No file uploaded',
+        });
+    }
 });
 
-
+// Static folder for uploaded files
 app.use('/uploads', express.static(uploadDir));
 
 // Use routes
 app.use('/api/applications', applicationRoutes);
 app.use('/api/interviews', interviewRoutes);
-app.use('/api/jobs', protect, jobRoutes); 
+app.use('/api/jobs', protect, jobRoutes);
 app.use('/api/company', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
-app.use('/api/recruitments', recruitmentRoutes); 
+app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/students', studentRoutes); 
-app.use('/api/academic-records', academicRecordRoutes); 
+app.use('/api/students', studentRoutes);
+app.use('/api/academic-records', academicRecordRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(`Error: ${err.message}`);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-  });
+    console.error(`Error: ${err.message}`);
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    });
 });
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch((err) => {
-    console.error('DB Connection Error:', err.message);
-    process.exit(1);
-  });
+    .connect(process.env.MONGO_URI)
+    .then(() => console.log('MongoDB Connected'))
+    .catch((err) => {
+        console.error('DB Connection Error:', err.message);
+        process.exit(1);
+    });
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
