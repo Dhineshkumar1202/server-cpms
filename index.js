@@ -13,14 +13,30 @@ dotenv.config();
 const app = express();
 
 // CORS configuration
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'https://portal-cpms1.netlify.app/',
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+
+
+const allowedOrigins = [
+    'https://appcollege-jsbz09o3.b4a.run/', 
+    'http://localhost:5173', 
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true, // Allow cookies if needed
+}));
+
 
 // Middleware to parse JSON
-app.use(express.json());
+
 
 
 const uploadDir = path.join(__dirname, 'uploads');
