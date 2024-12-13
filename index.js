@@ -14,7 +14,7 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    'https://cpms-portal.netlify.app/', 
+    'https://cpms-portal.netlify.app', 
     'http://localhost:5173', 
 ];
 
