@@ -1,75 +1,58 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/userModel'); // Corrected import
-const Student = require('../models/studentModel'); // Corrected import
+const bcrypt = require('bcryptjs');
+const User = require('../models/userModel');
+const Student = require('../models/studentModel');
+const Company = require('../models/companyModel');
 
-const JWT_SECRET = 'your_jwt_secret';
-
-// Signup Controller
-exports.signup = async (req, res) => {
-  const { name, email, password, role, phone } = req.body;
-
-  // Validate the role
-  if (!role || !['admin', 'company', 'student'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid or missing role' });
-  }
+const register = async (req, res) => {
+  const { email, password, role, firstName, lastName, phone, companyName } = req.body;
 
   try {
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if email is already in use
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
 
-      if (role === 'student') {
-          if (!phone) {  // Check if phone is provided
-              return res.status(400).json({ error: 'Phone number is required' });
-          }
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-          // Create a new student
-          const student = new Student({ name, email, password: hashedPassword, phone });
-          await student.save();
-          return res.status(201).json({ message: 'Student registered successfully' });
-      } else if (role === 'admin' || role === 'company') {
-          // Create a new user for admin or company
-          const user = new User({ name, email, password: hashedPassword, role });
-          await user.save();
-          return res.status(201).json({ message: `${role} registered successfully` });
-      } else {
-          return res.status(400).json({ error: 'Invalid role' });
-      }
+    // Create the user
+    const user = new User({
+      email,
+      password: hashedPassword,
+      role,
+    });
+
+    // Save the user
+    await user.save();
+
+    // Depending on the role, create additional info in the respective table
+    if (role === 'student') {
+      const student = new Student({
+        userId: user._id,
+        firstName,
+        lastName,
+        phone,
+        applicationStatus: 'submitted',
+      });
+      await student.save();
+      return res.status(201).json({ message: 'Student registered successfully' });
+    } else if (role === 'company') {
+      const company = new Company({
+        userId: user._id,
+        companyName,
+        contactEmail: email,
+        contactPhone: phone,
+      });
+      await company.save();
+      return res.status(201).json({ message: 'Company registered successfully' });
+    } else if (role === 'admin') {
+      return res.status(201).json({ message: 'Admin registered successfully' });
+    }
   } catch (error) {
-      console.error('Error in signup:', error);
-      if (error.code === 11000) {
-          return res.status(400).json({ error: 'Email already exists' });
-      }
-      res.status(500).json({ error: 'Server error', details: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Login Controller
-exports.login = async (req, res) => {
-    const { email, password, role } = req.body;
-
-    try {
-        if (role === 'student') {
-            const student = await Student.findOne({ email });
-            if (!student) return res.status(404).json({ error: 'Student not found' });
-
-            const isMatch = await bcrypt.compare(password, student.password);
-            if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-
-            const token = jwt.sign({ id: student._id, role: 'student' }, JWT_SECRET, { expiresIn: '1h' });
-            return res.json({ token, role: 'student' });
-        } else if (['admin', 'company'].includes(role)) {
-            const user = await User.findOne({ email, role });
-            if (!user) return res.status(404).json({ error: 'User not found' });
-
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-
-            const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-            return res.json({ token, role: user.role });
-        } else {
-            return res.status(400).json({ error: 'Invalid role' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
-};
+module.exports = { register };

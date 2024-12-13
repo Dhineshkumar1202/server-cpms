@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const jobController = require('../controllers/jobController');
-const { protect } = require('../middlewares/authMiddleware'); 
+const { protect } = require('../middlewares/authMiddleware');
 
-
+// Define routes
 router.post('/jobs', protect, jobController.createJob);
 router.get('/jobs', protect, jobController.getAllJobs);
 router.get('/jobs/:jobId', protect, jobController.getJobById);

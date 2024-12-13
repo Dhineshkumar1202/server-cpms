@@ -54,7 +54,7 @@ const companyRoutes = require('./routes/companyRoute');
 const placementDriveRoutes = require('./routes/placementDriveRoute');
 const recruitmentRoutes = require('./routes/recruitmentRoute');
 const academicRecordRoutes = require('./routes/academyRecordRoute');
-const authRoute = require('./routes/authRoute');
+const authRoutes = require('./routes/authRoute');
 const studentRoutes = require('./routes/studentRoute');
 
 // Middleware for authentication
@@ -89,7 +89,7 @@ app.use('/api/jobs', protect, jobRoutes);
 app.use('/api/company', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitments', recruitmentRoutes);
-app.use('/auth', authRoute);
+app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
 

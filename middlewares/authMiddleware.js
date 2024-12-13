@@ -1,37 +1,25 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
-const protect = (req, res, next) => {
-    try {
-        const authorizationHeader = req.headers.authorization;
-        if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-            return res.status(401).json({ 
-                message: "Not authorized. Token missing or malformed." 
-            });
-        }
+// Middleware function for protecting routes
+exports.protect = async (req, res, next) => {
+  const token = req.header('Authorization')?.split(' ')[1]; // Extract token from Authorization header
 
-        const token = authorizationHeader.split(" ")[1];
-        console.log("Received Token:", token);
+  if (!token) {
+    return res.status(403).json({ message: 'Access denied. No token provided.' });
+  }
 
-      
-        console.log("JWT Secret:", process.env.JWT_SECRET);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token using JWT_SECRET
+    const user = await User.findById(decoded.userId); // Find the user based on the ID from the token
 
-     
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
-        if (!decoded) {
-            return res.status(401).json({ 
-                message: "Invalid token. Please provide a valid token." 
-            });
-        }
-
-        req.user = decoded;
-        next();
-    } catch (error) {
-        console.error("Token verification error:", error.message);
-        return res.status(401).json({ 
-            message: "Token verification failed.", 
-            error: error.message 
-        });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-};
 
-module.exports = { protect };
+    req.user = user; // Attach the user to the request object
+    next(); // Call the next middleware or route handler
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid token' });
+  }
+};
