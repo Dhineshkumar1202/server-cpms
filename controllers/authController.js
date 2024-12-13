@@ -9,7 +9,7 @@ const JWT_SECRET = 'your_jwt_secret';
 exports.signup = async (req, res) => {
   const { name, email, password, role, phone } = req.body;
 
-  // Basic validation for role
+  // Validate the role
   if (!role || !['admin', 'company', 'student'].includes(role)) {
       return res.status(400).json({ error: 'Invalid or missing role' });
   }
@@ -18,10 +18,16 @@ exports.signup = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       if (role === 'student') {
+          if (!phone) {  // Check if phone is provided
+              return res.status(400).json({ error: 'Phone number is required' });
+          }
+
+          // Create a new student
           const student = new Student({ name, email, password: hashedPassword, phone });
           await student.save();
           return res.status(201).json({ message: 'Student registered successfully' });
-      } else if (['admin', 'company'].includes(role)) {
+      } else if (role === 'admin' || role === 'company') {
+          // Create a new user for admin or company
           const user = new User({ name, email, password: hashedPassword, role });
           await user.save();
           return res.status(201).json({ message: `${role} registered successfully` });
@@ -36,6 +42,7 @@ exports.signup = async (req, res) => {
       res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
+
 
 
 
