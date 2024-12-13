@@ -6,30 +6,33 @@ const Student = require('../models/userModel');
 const JWT_SECRET = 'your_jwt_secret';
 
 // Signup Controller
+// In authController.js
 exports.signup = async (req, res) => {
-    const { name, email, password, role, phone } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-        if (role === 'student') {
-            const student = new Student({ name, email, password: hashedPassword, phone });
-            await student.save();
-            return res.status(201).json({ message: 'Student registered successfully' });
-        } else if (['admin', 'company'].includes(role)) {
-            const user = new User({ name, email, password: hashedPassword, role });
-            await user.save();
-            return res.status(201).json({ message: `${role} registered successfully` });
-        } else {
-            return res.status(400).json({ error: 'Invalid role' });
-        }
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
-        res.status(500).json({ error: 'Server error' });
-    }
+      if (role === 'student') {
+          const student = new Student({ name, email, password: hashedPassword, phone });
+          await student.save();
+          return res.status(201).json({ message: 'Student registered successfully' });
+      } else if (['admin', 'company'].includes(role)) {
+          const user = new User({ name, email, password: hashedPassword, role });
+          await user.save();
+          return res.status(201).json({ message: `${role} registered successfully` });
+      } else {
+          return res.status(400).json({ error: 'Invalid role' });
+      }
+  } catch (error) {
+      console.error('Error in signup:', error); // Log the error for debugging
+      if (error.code === 11000) {
+          return res.status(400).json({ error: 'Email already exists' });
+      }
+      res.status(500).json({ error: 'Server error', details: error.message });
+  }
 };
+
 
 // Login Controller
 exports.login = async (req, res) => {
