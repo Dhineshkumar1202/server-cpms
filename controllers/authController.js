@@ -6,9 +6,13 @@ const Student = require('../models/userModel');
 const JWT_SECRET = 'your_jwt_secret';
 
 // Signup Controller
-// In authController.js
 exports.signup = async (req, res) => {
   const { name, email, password, role, phone } = req.body;
+
+  // Basic validation for role
+  if (!role || !['admin', 'company', 'student'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid or missing role' });
+  }
 
   try {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,13 +29,14 @@ exports.signup = async (req, res) => {
           return res.status(400).json({ error: 'Invalid role' });
       }
   } catch (error) {
-      console.error('Error in signup:', error); // Log the error for debugging
+      console.error('Error in signup:', error);
       if (error.code === 11000) {
           return res.status(400).json({ error: 'Email already exists' });
       }
       res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
+
 
 
 // Login Controller
