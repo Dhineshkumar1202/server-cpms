@@ -1,115 +1,63 @@
-const User = require('../models/userModel');
-const Student = require('../models/studentModel');
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
-const { generateToken } = require('../utils/jwtUtils');
+const jwt = require('jsonwebtoken');
+const User = require('../models/studentModel');
+const Student = require('../models/userModel');
 
+const JWT_SECRET = 'your_jwt_secret';
 
-const register = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+// Signup Controller
+exports.signup = async (req, res) => {
+    const { name, email, password, role, phone } = req.body;
 
-  try {
-    const { name, email, password, role, username, department, grade, resume } = req.body;
-
-    // Validate required fields
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ message: 'Name, email, password, and role are required' });
-    }
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email already exists' });
-    }
-
-    if (['admin', 'company'].includes(role) && !username) {
-      return res.status(400).json({ message: 'Username is required for admin or company roles' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      username: role !== 'student' ? username : undefined,
-    });
-
-    const savedUser = await user.save({ session });
-
-    if (role === 'student') {
-      if (!department || !grade) {
-        return res.status(400).json({ message: 'Department and grade are required for student registration' });
-      }
-
-      const student = new Student({
-        userId: savedUser._id,
-        department,
-        grade,
-        resume,
-      });
-
-      await student.save({ session });
-    }
-
-    await session.commitTransaction();
-    session.endSession();
-
-    res.status(201).json({ message: 'User registered successfully', user });
-  } catch (error) {
-    console.error('Error during registration:', error);
-
-    // Abort transaction
     try {
-      await session.abortTransaction();
-    } catch (abortError) {
-      console.error('Error aborting transaction:', abortError);
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        if (role === 'student') {
+            const student = new Student({ name, email, password: hashedPassword, phone });
+            await student.save();
+            return res.status(201).json({ message: 'Student registered successfully' });
+        } else if (['admin', 'company'].includes(role)) {
+            const user = new User({ name, email, password: hashedPassword, role });
+            await user.save();
+            return res.status(201).json({ message: `${role} registered successfully` });
+        } else {
+            return res.status(400).json({ error: 'Invalid role' });
+        }
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+        res.status(500).json({ error: 'Server error' });
     }
-
-    session.endSession();
-
-    // Handle duplicate key errors
-    if (error.code === 11000) {
-      const duplicateField = Object.keys(error.keyValue)[0];
-      return res.status(400).json({ message: `${duplicateField} already exists` });
-    }
-
-    res.status(500).json({ message: 'Registration failed', error: error.message });
-  }
 };
 
+// Login Controller
+exports.login = async (req, res) => {
+    const { email, password, role } = req.body;
 
+    try {
+        if (role === 'student') {
+            const student = await Student.findOne({ email });
+            if (!student) return res.status(404).json({ error: 'Student not found' });
 
+            const isMatch = await bcrypt.compare(password, student.password);
+            if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+            const token = jwt.sign({ id: student._id, role: 'student' }, JWT_SECRET, { expiresIn: '1h' });
+            return res.json({ token, role: 'student' });
+        } else if (['admin', 'company'].includes(role)) {
+            const user = await User.findOne({ email, role });
+            if (!user) return res.status(404).json({ error: 'User not found' });
 
-   
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+            const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+            return res.json({ token, role: user.role });
+        } else {
+            return res.status(400).json({ error: 'Invalid role' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
     }
-
-   
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-   
-    const token = generateToken(user);
-
-    res.status(200).json({
-      message: 'Login successful',
-      token,
-      user: { id: user._id, name: user.name, role: user.role, username: user.username },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
 };
-
-module.exports = { loginUser, register };
