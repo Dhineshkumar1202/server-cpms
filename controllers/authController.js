@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/studentModel');
-const Student = require('../models/userModel');
+const User = require('../models/userModel'); // Corrected import
+const Student = require('../models/studentModel'); // Corrected import
 
 const JWT_SECRET = 'your_jwt_secret';
 
@@ -42,9 +42,6 @@ exports.signup = async (req, res) => {
       res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
-
-
-
 
 // Login Controller
 exports.login = async (req, res) => {
