@@ -82,7 +82,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 
 
 
@@ -97,7 +97,7 @@ mongoose
     });
 
 
-    
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
