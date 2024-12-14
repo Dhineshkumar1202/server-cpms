@@ -14,13 +14,12 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    'https://cpms-portal.netlify.app', 
-    'http://localhost:5173', 
+    'https://cpms-portal.netlify.app',
+    'http://localhost:5173',
 ];
 
 app.use(cors({
     origin: (origin, callback) => {
-      
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -28,17 +27,14 @@ app.use(cors({
             callback(new Error('CORS policy does not allow this origin.'));
         }
     },
-    credentials: true, 
+    credentials: true,
 }));
 
-
-app.options('*', cors());
-
-
+// Middleware for parsing JSON and URL encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+// Directory for file uploads
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -55,17 +51,13 @@ const placementDriveRoutes = require('./routes/placementDriveRoute');
 const recruitmentRoutes = require('./routes/recruitmentRoute');
 const academicRecordRoutes = require('./routes/academyRecordRoute');
 const authRoutes = require('./routes/authRoute');
-const studentRoutes = require('./routes/studentRoute');
-
-// Middleware for authentication
-const { protect } = require('./middlewares/authMiddleware');
 
 // API Test Route
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-// File upload API
+// File upload route
 app.post('/api/upload', upload.single('file'), (req, res) => {
     if (req.file) {
         res.status(200).json({
@@ -85,22 +77,12 @@ app.use('/uploads', express.static(uploadDir));
 // Use routes
 app.use('/api/applications', applicationRoutes);
 app.use('/api/interviews', interviewRoutes);
-app.use('/api/jobs', protect, jobRoutes);
-app.use('/api/company', companyRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitments', recruitmentRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/students', studentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(`Error: ${err.message}`);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-        error: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    });
-});
+app.use('/api/auth', authRoutes);
 
 // MongoDB connection
 mongoose

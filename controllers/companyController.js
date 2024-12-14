@@ -65,4 +65,12 @@ exports.updateCompanyDetails = async (req, res) => {
   }
 };
 
+// controllers/companyController.js
+exports.createCompany = (req, res) => {
+  res.status(201).json({ message: 'Company created successfully' });
+};
+
+exports.getCompanyDetails = (req, res) => {
+  res.status(200).json({ message: 'Company details fetched' });
+};
 

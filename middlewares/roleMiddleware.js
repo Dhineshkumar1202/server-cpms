@@ -1,11 +1,8 @@
-const roleMiddleware = (roles) => {
+exports.roleMiddleware = (role) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-    next(); // Proceed to the next middleware or route handler
+      if (req.user.role !== role) {
+          return res.status(403).json({ message: "Access denied" });
+      }
+      next();
   };
 };
-
-module.exports = roleMiddleware;
-s

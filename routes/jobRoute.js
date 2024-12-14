@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const jobController = require('../controllers/jobController');
-const { protect } = require('../middlewares/authMiddleware');
+
+// Controller functions (ensure these are defined in your controllers)
+const { createJob, getAllJobs } = require('../controllers/jobController');
 
 // Define routes
-router.post('/jobs', protect, jobController.createJob);
-router.get('/jobs', protect, jobController.getAllJobs);
-router.get('/jobs/:jobId', protect, jobController.getJobById);
-router.put('/jobs/:jobId', protect, jobController.updateJob);
-router.delete('/jobs/:jobId', protect, jobController.deleteJob);
+router.post('/', createJob); // Post route to create a job
+router.get('/', getAllJobs); // Get route to fetch all jobs
 
+// Export router
 module.exports = router;

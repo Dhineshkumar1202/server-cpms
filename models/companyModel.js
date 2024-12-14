@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
 
 const companySchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  companyName: { type: String, required: true },
-  contactEmail: { type: String, required: true },
-  contactPhone: { type: String },
-  companyProfile: { type: String },
+    companyName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    // Add other company-specific fields (e.g., job listings, company profile)
 });
 
-const Company = mongoose.model('Company', companySchema);
-
-module.exports = Company;
+module.exports = mongoose.model('Company', companySchema);

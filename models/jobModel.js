@@ -1,31 +1,33 @@
 // models/jobModel.js
+
 const mongoose = require('mongoose');
 
-const jobSchema = mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
+const jobSchema = new mongoose.Schema(
+    {
+        jobTitle: {
+            type: String,
+            required: true,
+        },
+        companyName: {
+            type: String,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        location: {
+            type: String,
+        },
+        salary: {
+            type: Number,
+        },
+        company: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Company',  // Linking the job to a company
+        },
     },
-    description: {
-      type: String,
-      required: true,
-    },
-    company: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Company',  
-      required: true,
-    },
-    location: {
-      type: String,
-      required: true,
-    },
-    applicationDeadline: {
-      type: Date,
-      required: true,
-    },
-  },
-  { timestamps: true }
+    { timestamps: true }
 );
 
 const Job = mongoose.model('Job', jobSchema);
