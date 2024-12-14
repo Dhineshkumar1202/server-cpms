@@ -84,6 +84,9 @@ app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
 app.use('/api/auth', authRoutes);
 
+
+
+
 // MongoDB connection
 mongoose
     .connect(process.env.MONGO_URI)
@@ -93,6 +96,8 @@ mongoose
         process.exit(1);
     });
 
+
+    
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
