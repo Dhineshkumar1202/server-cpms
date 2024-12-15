@@ -1,4 +1,4 @@
-// config/config.js
+
 
 module.exports = {
     db: {
@@ -7,6 +7,5 @@ module.exports = {
       host: 'localhost',
       database: 'mydatabase',
     },
-    // Add other configurations like JWT secret, etc.
-  };
+      };
   

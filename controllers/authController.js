@@ -11,6 +11,7 @@ exports.signup = async (req, res) => {
 
     try {
         let user;
+        user = await User
         if (role === 'student') {
             user = await Student.findOne({ email });
             if (user) return res.status(400).json({ message: "Student already exists." });

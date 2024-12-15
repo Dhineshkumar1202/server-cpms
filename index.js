@@ -82,7 +82,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
-app.use('/auth', authRoutes);
+app.use('/api/auth',authRoutes);
 
 
 
