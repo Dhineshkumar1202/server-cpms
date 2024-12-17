@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 const User = require('../models/userModel');
 const Student = require('../models/studentModel');
 const Admin = require('../models/adminModel');
@@ -55,36 +56,46 @@ router.post("/signup", async (req, res) => {
 
 
 
-
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+    }
 
     try {
         const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+        if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
         // Fetch role-specific data
         let roleData = {};
-        if (user.role === 'student') {
-            roleData = await Student.findOne({ user: user._id });
-        } else if (user.role === 'admin') {
-            roleData = await Admin.findOne({ user: user._id });
-        } else if (user.role === 'company') {
-            roleData = await Company.findOne({ user: user._id });
+        if (user.role === "student") {
+            roleData = await Student.findOne({ userId: user._id });
+        } else if (user.role === "admin") {
+            roleData = await Admin.findOne({ userId: user._id });
+        } else if (user.role === "company") {
+            roleData = await Company.findOne({ userId: user._id });
         }
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-            expiresIn: '1h',
+            expiresIn: "1h",
         });
 
-        res.json({ token, user, roleData });
+        res.json({
+            token,
+            role: user.role, // Explicitly include the role here
+            user, // User details
+            roleData, // Role-specific data
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error", error });
     }
 });
+
 
 
 
