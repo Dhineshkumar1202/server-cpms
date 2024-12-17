@@ -5,8 +5,6 @@ const User = require('../models/userModel');
 const Student = require('../models/studentModel');
 const Admin = require('../models/adminModel');
 const Company = require('../models/companyModel');
-
-
 require('dotenv').config();
 
 const router = express.Router();
@@ -20,10 +18,8 @@ router.post("/signup", async (req, res) => {
     }
 
     try {
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Save user to User model
         const user = await User.create({
             name,
             email,
@@ -31,7 +27,6 @@ router.post("/signup", async (req, res) => {
             role,
         });
 
-        // Save role-specific data
         if (role === "student") {
             await Student.create({
                 userId: user._id,
@@ -73,7 +68,6 @@ router.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-        // Fetch role-specific data
         let roleData = {};
         if (user.role === "student") {
             roleData = await Student.findOne({ userId: user._id });
@@ -88,7 +82,7 @@ router.post("/login", async (req, res) => {
             return res.status(500).json({ message: "Missing JWT_SECRET environment variable" });
         }
 
-        // Create a JWT token using the user's id and role
+        // Create JWT token
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
@@ -106,6 +100,3 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
-
-
-
