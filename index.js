@@ -14,7 +14,7 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-    'https://6761b9cdc8eb4e046f40aaf4--voluble-sawine-cb37ed.netlify.app',
+    'https://voluble-sawine-cb37ed.netlify.app',
     'http://localhost:5173',
 ];
 
