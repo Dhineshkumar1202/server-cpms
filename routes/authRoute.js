@@ -86,9 +86,9 @@ router.post("/login", async (req, res) => {
 
         res.json({
             token,
-            role: user.role, // Explicitly include the role here
-            user, // User details
-            roleData, // Role-specific data
+            role: user.role, 
+            user, 
+            roleData, 
         });
     } catch (error) {
         console.error("Login error:", error);
