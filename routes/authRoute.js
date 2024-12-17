@@ -6,7 +6,7 @@ const Student = require('../models/studentModel');
 const Admin = require('../models/adminModel');
 const Company = require('../models/companyModel');
 
-// Initialize dotenv to load environment variables from the .env file
+
 require('dotenv').config();
 
 const router = express.Router();
@@ -106,3 +106,6 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
+
+
+
