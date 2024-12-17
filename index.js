@@ -12,23 +12,25 @@ dotenv.config();
 // Initialize the app
 const app = express();
 
-// CORS configuration
 const allowedOrigins = [
-    'https://voluble-sawine-cb37ed.netlify.app',
-    'http://localhost:5173',
-];
-
-app.use(cors({
-    origin: (origin, callback) => {
+    'https://6761bea3d3a76308452c436a--voluble-sawine-cb37ed.netlify.app',
+    'http://localhost:5173', // For local development
+  ];
+  
+  app.use(
+    cors({
+      origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
+          callback(null, true);
         } else {
-            console.error(`CORS error: origin ${origin} not allowed`);
-            callback(new Error('CORS policy does not allow this origin.'));
+          callback(new Error('Not allowed by CORS'));
         }
-    },
-    credentials: true,
-}));
+      },
+      methods: 'GET,POST,PUT,DELETE',
+      credentials: true,
+    })
+  );
+  
 
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
