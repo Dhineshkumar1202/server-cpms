@@ -1,13 +1,17 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const Student = require('../models/studentModel');
 const Admin = require('../models/adminModel');
 const Company = require('../models/companyModel');
 
+// Initialize dotenv to load environment variables from the .env file
+require('dotenv').config();
+
 const router = express.Router();
 
+// Sign-up route
 router.post("/signup", async (req, res) => {
     const { name, email, password, role, additionalData } = req.body;
 
@@ -54,8 +58,7 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-
-
+// Login route
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -80,23 +83,26 @@ router.post("/login", async (req, res) => {
             roleData = await Company.findOne({ userId: user._id });
         }
 
+        // Check if JWT_SECRET is set in the environment
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ message: "Missing JWT_SECRET environment variable" });
+        }
+
+        // Create a JWT token using the user's id and role
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
 
         res.json({
             token,
-            role: user.role, 
-            user, 
-            roleData, 
+            role: user.role,
+            user,
+            roleData,
         });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 });
-
-
-
 
 module.exports = router;
