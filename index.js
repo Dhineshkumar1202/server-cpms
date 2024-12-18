@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    'https://frontend-college-n3n2.vercel.app/',
+    'https://client-cpms.netlify.app',
     'http://localhost:5173', // For local development
   ];
   
