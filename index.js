@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-    'https://6761bea3d3a76308452c436a--voluble-sawine-cb37ed.netlify.app',
+    'https://cpms-app.netlify.app',
     'http://localhost:5173', // For local development
   ];
   
