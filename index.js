@@ -12,24 +12,8 @@ dotenv.config();
 // Initialize the app
 const app = express();
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:5173', // For local development
-  ];
-  
-  app.use(
-    cors({
-      origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
-      },
-      methods: 'GET,POST,PUT,DELETE',
-      credentials: true,
-    })
-  );
+
+app.use(cors())
   
 
 // Middleware for parsing JSON and URL encoded data
