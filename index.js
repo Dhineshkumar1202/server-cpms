@@ -12,8 +12,24 @@ dotenv.config();
 // Initialize the app
 const app = express();
 
-
-app.use(cors())
+const allowedOrigins = [
+    'https://client-cpms.netlify.app',
+    'http://localhost:5173', // For local development
+  ];
+  
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      methods: 'GET,POST,PUT,DELETE',
+      credentials: true,
+    })
+  );
   
 
 // Middleware for parsing JSON and URL encoded data
