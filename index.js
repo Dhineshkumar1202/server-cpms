@@ -15,9 +15,9 @@ const app = express();
 const allowedOrigins = [
     'https://client-cpms.netlify.app',
     'http://localhost:5173', // For local development
-  ];
-  
-  app.use(
+];
+
+app.use(
     cors({
       origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -29,8 +29,7 @@ const allowedOrigins = [
       methods: 'GET,POST,PUT,DELETE',
       credentials: true,
     })
-  );
-  
+);
 
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
@@ -42,7 +41,17 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const upload = multer({ dest: uploadDir });
+// Multer Storage configuration to keep original file name
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir); // Store in 'uploads' folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Add timestamp to avoid name collisions
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // Import routes
 const applicationRoutes = require('./routes/applicationRoute');
@@ -76,6 +85,18 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 // Static folder for uploaded files
 app.use('/uploads', express.static(uploadDir));
 
+// Serve files correctly
+app.get('/uploads/:filename', (req, res) => {
+    const filePath = path.join(uploadDir, req.params.filename);
+    fs.exists(filePath, (exists) => {
+        if (exists) {
+            res.sendFile(filePath);
+        } else {
+            res.status(404).json({ message: 'File not found' });
+        }
+    });
+});
+
 // Use routes
 app.use('/api/applications', applicationRoutes);
 app.use('/api/interviews', interviewRoutes);
@@ -84,10 +105,7 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
-app.use('/api/auth',authRoutes);
-
-
-
+app.use('/api/auth', authRoutes);
 
 // MongoDB connection
 mongoose
@@ -98,10 +116,10 @@ mongoose
         process.exit(1);
     });
 
-
-
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
