@@ -44,14 +44,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
 const allowedOrigins = [
     'https://client-cpms.netlify.app',
     'http://localhost:5173', // For local development
@@ -72,17 +64,9 @@ app.use(
 );
 
 
-
-
-
-
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-
-
 
 
 // Import routes
@@ -114,11 +98,6 @@ app.use('/api/academic-records', academicRecordRoutes);
 app.use('/api/auth', authRoutes);
 
 
-
-
-
-
-
 // MongoDB connection
 mongoose
     .connect(process.env.MONGO_URI)
@@ -127,10 +106,6 @@ mongoose
         console.error('DB Connection Error:', err.message);
         process.exit(1);
     });
-
-
-
-
 
 
 
