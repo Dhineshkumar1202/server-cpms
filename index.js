@@ -6,11 +6,51 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+
+
 // Load environment variables
 dotenv.config();
 
 // Initialize the app
 const app = express();
+
+
+
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir); // Use the uploads directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Save the file with its original name
+    }
+});
+
+const upload = multer({ storage });
+
+// File upload route
+app.post('/api/upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+    res.json({
+        filePath: req.file.path,
+        message: 'File uploaded successfully',
+    });
+});
+
+
+
+
+
+
+
+
+
 
 const allowedOrigins = [
     'https://client-cpms.netlify.app',
@@ -31,27 +71,19 @@ app.use(
     })
 );
 
+
+
+
+
+
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Directory for file uploads
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
 
-// Multer Storage configuration to keep original file name
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir); // Store in 'uploads' folder
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Add timestamp to avoid name collisions
-    }
-});
 
-const upload = multer({ storage: storage });
+
+
 
 // Import routes
 const applicationRoutes = require('./routes/applicationRoute');
@@ -68,34 +100,8 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-// File upload route
-app.post('/api/upload', upload.single('file'), (req, res) => {
-    if (req.file) {
-        res.status(200).json({
-            message: 'File uploaded successfully',
-            file: req.file,
-        });
-    } else {
-        res.status(400).json({
-            message: 'No file uploaded',
-        });
-    }
-});
 
-// Static folder for uploaded files
-app.use('/uploads', express.static(uploadDir));
 
-// Serve files correctly
-app.get('/uploads/:filename', (req, res) => {
-    const filePath = path.join(uploadDir, req.params.filename);
-    fs.exists(filePath, (exists) => {
-        if (exists) {
-            res.sendFile(filePath);
-        } else {
-            res.status(404).json({ message: 'File not found' });
-        }
-    });
-});
 
 // Use routes
 app.use('/api/applications', applicationRoutes);
@@ -107,6 +113,12 @@ app.use('/api/recruitments', recruitmentRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
 app.use('/api/auth', authRoutes);
 
+
+
+
+
+
+
 // MongoDB connection
 mongoose
     .connect(process.env.MONGO_URI)
@@ -115,6 +127,12 @@ mongoose
         console.error('DB Connection Error:', err.message);
         process.exit(1);
     });
+
+
+
+
+
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;
