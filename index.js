@@ -86,7 +86,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 app.use('/uploads', express.static(uploadDir));
 
 // Serve files correctly
-app.get('/uploads/resume', (req, res) => {
+app.get('/uploads/:filename', (req, res) => {
     const filePath = path.join(uploadDir, req.params.filename);
     fs.exists(filePath, (exists) => {
         if (exists) {
