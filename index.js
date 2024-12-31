@@ -74,7 +74,7 @@ const interviewRoutes = require('./routes/interviewRoute');
 const jobRoutes = require('./routes/jobRoute');
 const companyRoutes = require('./routes/companyRoute');
 const placementDriveRoutes = require('./routes/placementDriveRoute');
-const recruitmentRoutes = require('./routes/recruitmentRoute');
+const recruitmentStatusRoutes = require('./routes/recruitmentStatusRoute');
 const academicRecordRoutes = require('./routes/academyRecordRoute');
 const authRoutes = require('./routes/authRoute');
 
