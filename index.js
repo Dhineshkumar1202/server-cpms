@@ -92,7 +92,7 @@ app.use('/api/interviews', interviewRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
-app.use('/api/recruitments', recruitmentRoutes);
+app.use('/api/recruitment-status', recruitmentStatusRoutes);
 app.use('/api/academic-records', academicRecordRoutes);
 app.use('/api/auth', authRoutes);
 
