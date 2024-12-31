@@ -45,8 +45,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 
 
 const allowedOrigins = [
-    'https://client-cpms.netlify.app',
-    'http://localhost:5173', // For local development
+    'https://client-cpms.netlify.app'
 ];
 
 app.use(
