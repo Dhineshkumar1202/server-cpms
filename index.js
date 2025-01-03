@@ -75,7 +75,7 @@ const jobRoutes = require('./routes/jobRoute');
 const companyRoutes = require('./routes/companyRoute');
 const placementDriveRoutes = require('./routes/placementDriveRoute');
 const recruitmentStatusRoutes = require('./routes/recruitmentStatusRoute');
-const academicRecordRoutes = require('./routes/academyRecordRoute');
+const academicRecordsRoutes = require("./routes/academicRecordRoute");
 const authRoutes = require('./routes/authRoute');
 
 // API Test Route
@@ -93,7 +93,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitment-status', recruitmentStatusRoutes);
-app.use('/api/academic-records', academicRecordRoutes);
+app.use("/api/academic-records", academicRecordsRoutes);
 app.use('/api/auth', authRoutes);
 
 
