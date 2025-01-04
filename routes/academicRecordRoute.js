@@ -18,7 +18,8 @@ router.post("/", async (req, res) => {
 // Get Academic Records by Student ID
 router.get("/:studentId", async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.studentId)) {
+    // Validate studentId as numeric
+    if (!/^\d+$/.test(req.params.studentId)) {
       return res.status(400).json({ message: "Invalid studentId format" });
     }
 
@@ -36,6 +37,7 @@ router.get("/:studentId", async (req, res) => {
     res.status(500).json({ message: "Error fetching academic records", error: error.message });
   }
 });
+
 
 // Update Academic Record
 router.put("/:id", async (req, res) => {
