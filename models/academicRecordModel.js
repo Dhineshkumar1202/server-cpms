@@ -1,13 +1,24 @@
+// models/AcademicRecord.js
 const mongoose = require("mongoose");
 
 const academicRecordSchema = new mongoose.Schema({
   studentId: {
-    type: String, // Use `mongoose.Schema.Types.ObjectId` if studentId is an ObjectId
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
     required: true,
   },
-  course: { type: String, required: true },
-  grade: { type: String, required: true },
-  year: { type: Number, required: true },
+  grades: {
+    type: Map, // Example: { "Math": "A", "English": "B+" }
+    of: String,
+  },
+  achievements: [String],
+  transcript: {
+    type: String, // Store file path or URL for uploaded transcript
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("AcademicRecord", academicRecordSchema);
