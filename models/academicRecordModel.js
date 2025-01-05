@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 
 const academicRecordSchema = new mongoose.Schema({
   studentId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
     required: true,
   },
   grades: {
-    type: Map, 
+    type: Map, // Example: { "Math": "A", "English": "B+" }
     of: String,
   },
   achievements: [String],
   transcript: {
-    type: String, 
+    type: String, // Store file path or URL for uploaded transcript
   },
   createdAt: {
     type: Date,
