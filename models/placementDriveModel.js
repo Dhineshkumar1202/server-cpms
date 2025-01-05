@@ -1,23 +1,40 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-
-const PlacementDriveSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String },
-  date: { type: Date, required: true },
-  companies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Company' }],
-  studentsParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
-  interviews: [
+const placementDriveSchema = new mongoose.Schema({
+  companyName: {
+    type: String,
+    required: true,
+  },
+  jobTitle: {
+    type: String,
+    required: true,
+  },
+  jobDescription: {
+    type: String,
+    required: true,
+  },
+  eligibilityCriteria: {
+    type: String,
+    required: true,
+  },
+  package: {
+    type: String,
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  studentsApplied: [
     {
-      company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-      student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
-      status: { type: String, enum: ['Scheduled', 'Completed', 'Offer Made'], default: 'Scheduled' },
-    }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+    },
   ],
- 
-  interviewsConducted: { type: Number, default: 0 }, 
-  offersMade: { type: Number, default: 0 },          
-  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('PlacementDrive', PlacementDriveSchema);
+module.exports = mongoose.model("PlacementDrive", placementDriveSchema);
