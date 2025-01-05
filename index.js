@@ -66,6 +66,7 @@ app.use(
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
 
 
 // Import routes
@@ -77,6 +78,7 @@ const placementDriveRoutes = require("./routes/placementDriveRoute");
 const recruitmentStatusRoutes = require('./routes/recruitmentStatusRoute');
 const academicRecordsRoutes = require("./routes/academicRecordRoute");
 const authRoutes = require('./routes/authRoute');
+const jobApplicationRoutes = require("./routes/jobApplicationRoute");
 
 // API Test Route
 app.get('/', (req, res) => {
@@ -95,6 +97,7 @@ app.use("/api/placement-drives", placementDriveRoutes);
 app.use('/api/recruitment-status', recruitmentStatusRoutes);
 app.use("/api/academic-records", academicRecordsRoutes);
 app.use('/api/auth', authRoutes);
+app.use("/api/job-applications", jobApplicationRoutes);
 
 
 // MongoDB connection
