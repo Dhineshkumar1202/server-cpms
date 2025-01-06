@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
 // Get Academic Records by Student ID
 router.get("/:studentId", async (req, res) => {
   try {
-    // Validate studentId as numeric
+   
     if (!/^\d+$/.test(req.params.studentId)) {
       return res.status(400).json({ message: "Invalid studentId format" });
     }
@@ -39,7 +39,7 @@ router.get("/:studentId", async (req, res) => {
 });
 
 
-// Update Academic Record
+// Update
 router.put("/:id", async (req, res) => {
   try {
     const updatedRecord = await AcademicRecord.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -50,7 +50,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete Academic Record
+// Delete 
 router.delete("/:id", async (req, res) => {
   try {
     await AcademicRecord.findByIdAndDelete(req.params.id);

@@ -3,6 +3,9 @@ const router = express.Router();
 const multer = require("multer");
 const JobApplication = require("../models/jobApplicationModel");
 
+
+
+
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -14,6 +17,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+
+
+
 
 // Submit a Job Application
 router.post("/", upload.single("file"), async (req, res) => {
@@ -39,6 +46,11 @@ router.post("/", upload.single("file"), async (req, res) => {
   }
 });
 
+
+
+
+
+
 // Get Applications by Student ID
 router.get("/student/:studentId", async (req, res) => {
   try {
@@ -50,6 +62,10 @@ router.get("/student/:studentId", async (req, res) => {
   }
 });
 
+
+
+
+
 // Get Applications by Job ID
 router.get("/job/:jobId", async (req, res) => {
   try {
@@ -60,6 +76,10 @@ router.get("/job/:jobId", async (req, res) => {
     res.status(500).json({ message: "Error fetching applications", error: error.message });
   }
 });
+
+
+
+
 
 // Delete Application
 router.delete("/:id", async (req, res) => {

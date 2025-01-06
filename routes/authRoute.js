@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
             roleData = await Company.findOne({ userId: user._id });
         }
 
-        // Check if JWT_SECRET is set in the environment
+        
         if (!process.env.JWT_SECRET) {
             return res.status(500).json({ message: "Missing JWT_SECRET environment variable" });
         }

@@ -1,6 +1,6 @@
 const RecruitmentStatus = require('../models/recruitmentStatus');
 
-// Get all recruitment statuses
+// Get all 
 exports.getRecruitmentStatuses = async (req, res) => {
     try {
         const statuses = await RecruitmentStatus.find().populate('studentId jobId');
@@ -10,7 +10,7 @@ exports.getRecruitmentStatuses = async (req, res) => {
     }
 };
 
-// Create a new recruitment status
+// Create 
 exports.createRecruitmentStatus = async (req, res) => {
     const { studentId, jobId, status, comments } = req.body;
     try {
@@ -21,7 +21,7 @@ exports.createRecruitmentStatus = async (req, res) => {
     }
 };
 
-// Update a recruitment status
+// Update 
 exports.updateRecruitmentStatus = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -33,7 +33,7 @@ exports.updateRecruitmentStatus = async (req, res) => {
     }
 };
 
-// Delete a recruitment status
+// Delete 
 exports.deleteRecruitmentStatus = async (req, res) => {
     const { id } = req.params;
     try {

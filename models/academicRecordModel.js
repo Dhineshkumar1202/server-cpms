@@ -8,12 +8,12 @@ const academicRecordSchema = new mongoose.Schema({
     required: true,
   },
   grades: {
-    type: Map, // Example: { "Math": "A", "English": "B+" }
+    type: Map, 
     of: String,
   },
   achievements: [String],
   transcript: {
-    type: String, // Store file path or URL for uploaded transcript
+    type: String,
   },
   createdAt: {
     type: Date,

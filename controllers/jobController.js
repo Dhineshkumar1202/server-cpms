@@ -6,12 +6,12 @@ exports.createJob = async (req, res) => {
     try {
         const { jobTitle, companyName, description, location, salary } = req.body;
 
-        // Validate required fields
+     
         if (!jobTitle || !companyName || !description) {
             return res.status(400).json({ message: 'Please provide all required fields' });
         }
 
-        // Find the company (optional check if company exists)
+      
         const company = await Company.findOne({ name: companyName });
         if (!company) {
             return res.status(400).json({ message: 'Company not found' });
@@ -24,7 +24,7 @@ exports.createJob = async (req, res) => {
             description,
             location,
             salary,
-            company: company._id,  // Link to the company
+            company: company._id, 
         });
 
         const savedJob = await newJob.save();
@@ -41,7 +41,7 @@ exports.createJob = async (req, res) => {
 // Get all jobs
 exports.getAllJobs = async (req, res) => {
     try {
-        const jobs = await Job.find().populate('company');  // Populate company data
+        const jobs = await Job.find().populate('company'); 
         res.status(200).json({
             message: 'Jobs fetched successfully',
             jobs,
@@ -76,11 +76,11 @@ exports.updateJob = async (req, res) => {
     const { jobTitle, companyName, description, location, salary } = req.body;
 
     try {
-        // Find the job and update it
+        
         const updatedJob = await Job.findByIdAndUpdate(
             jobId,
             { jobTitle, companyName, description, location, salary },
-            { new: true } // Return the updated document
+            { new: true } 
         ).populate('company');
 
         if (!updatedJob) {
@@ -102,7 +102,7 @@ exports.deleteJob = async (req, res) => {
     const jobId = req.params.jobId;
 
     try {
-        // Find the job and delete it
+        
         const deletedJob = await Job.findByIdAndDelete(jobId);
 
         if (!deletedJob) {

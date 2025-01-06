@@ -8,14 +8,27 @@ const fs = require('fs');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
+
+
+
 // Load environment variables
 dotenv.config();
+
+
+
 
 // Initialize the app
 const app = express();
 
+
+
+
+
 // Middleware for security
 app.use(helmet());
+
+
+
 
 // Rate limiting to prevent abuse
 const limiter = rateLimit({
@@ -24,9 +37,17 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+
+
+
+
 // Middleware for parsing JSON and URL encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+
+
 
 // CORS configuration
 const allowedOrigins = ['https://client-cpms.netlify.app'];
@@ -50,6 +71,8 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
@@ -57,6 +80,8 @@ const storage = multer.diskStorage({
         cb(null, uniqueName);
     },
 });
+
+
 
 const upload = multer({
     storage,
@@ -67,7 +92,7 @@ const upload = multer({
         }
         cb(null, true);
     },
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+    limits: { fileSize: 5 * 1024 * 1024 }, 
 });
 
 // File upload route
@@ -81,8 +106,14 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     });
 });
 
+
+
 // Serve uploaded files statically
 app.use('/uploads', express.static('uploads'));
+
+
+
+
 
 // Test route
 app.get('/', (req, res) => {
@@ -100,6 +131,15 @@ const academicRecordsRoutes = require('./routes/academicRecordRoute');
 const authRoutes = require('./routes/authRoute');
 const jobApplicationRoutes = require('./routes/jobApplicationRoute');
 
+
+
+
+
+
+
+
+
+
 app.use('/api/applications', applicationRoutes);
 app.use('/api/interviews', interviewRoutes);
 app.use('/api/jobs', jobRoutes);
@@ -110,6 +150,10 @@ app.use('/api/academic-records', academicRecordsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
 
+
+
+
+
 // MongoDB connection
 mongoose
     .connect(process.env.MONGO_URI)
@@ -119,11 +163,20 @@ mongoose
         process.exit(1);
     });
 
+
+
+
+
 // Error-handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
+
+
+
+
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;

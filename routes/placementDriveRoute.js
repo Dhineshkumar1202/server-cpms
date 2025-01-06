@@ -14,6 +14,8 @@ router.post("/", async (req, res) => {
   }
 });
 
+
+
 // Get All Placement Drives
 router.get("/", async (req, res) => {
   try {
@@ -24,6 +26,8 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error fetching placement drives", error: error.message });
   }
 });
+
+
 
 // Get Placement Drive by ID
 router.get("/:id", async (req, res) => {
@@ -38,6 +42,9 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Error fetching placement drive", error: error.message });
   }
 });
+
+
+
 
 // Update Placement Drive
 router.put("/:id", async (req, res) => {
@@ -55,6 +62,9 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+
+
+
 // Delete Placement Drive
 router.delete("/:id", async (req, res) => {
   try {
@@ -68,5 +78,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting placement drive", error: error.message });
   }
 });
+
 
 module.exports = router;
