@@ -123,13 +123,13 @@ app.get('/', (req, res) => {
 // Import and use routes
 const applicationRoutes = require('./routes/applicationRoute');
 const interviewRoutes = require('./routes/interviewRoute');
-const jobRoutes = require('./routes/jobRoute');
 const companyRoutes = require('./routes/companyRoute');
 const placementDriveRoutes = require('./routes/placementDriveRoute');
 const recruitmentStatusRoutes = require('./routes/recruitmentStatusRoute');
 const academicRecordsRoutes = require('./routes/academicRecordRoute');
 const authRoutes = require('./routes/authRoute');
 const jobApplicationRoutes = require('./routes/jobApplicationRoute');
+const jobRoutes = require("./routes/jobRoute");
 
 
 
@@ -142,13 +142,13 @@ const jobApplicationRoutes = require('./routes/jobApplicationRoute');
 
 app.use('/api/applications', applicationRoutes);
 app.use('/api/interviews', interviewRoutes);
-app.use('/api/jobs', jobRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/placement-drives', placementDriveRoutes);
 app.use('/api/recruitment-status', recruitmentStatusRoutes);
 app.use('/api/academic-records', academicRecordsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
+app.use("/api/jobs", jobRoutes);
 
 
 

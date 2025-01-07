@@ -1,18 +1,11 @@
-const express = require('express');
+const express = require("express");
+const { getJobs, createJob } = require("../controllers/jobController");
 const router = express.Router();
 
+// GET all jobs with optional filters
+router.get("/", getJobs);
 
+// POST a new job (Admin only)
+router.post("/", createJob);
 
-// Controller functions 
-const { createJob, getAllJobs } = require('../controllers/jobController');
-
-
-
-
-// Define routes
-router.post('/', createJob); 
-router.get('/', getAllJobs); 
-
-
-// Export router
 module.exports = router;
