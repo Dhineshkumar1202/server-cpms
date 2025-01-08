@@ -9,18 +9,12 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 
-
-
 // Load environment variables
 dotenv.config();
 
 
-
-
 // Initialize the app
 const app = express();
-
-
 
 
 
@@ -95,6 +89,7 @@ const upload = multer({
     limits: { fileSize: 5 * 1024 * 1024 }, 
 });
 
+
 // File upload route
 app.post('/api/upload', upload.single('file'), (req, res) => {
     if (!req.file) {
@@ -112,9 +107,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 app.use('/uploads', express.static('uploads'));
 
 
-
-
-
 // Test route
 app.get('/', (req, res) => {
     res.send('API is running...');
@@ -130,12 +122,6 @@ const academicRecordsRoutes = require('./routes/academicRecordRoute');
 const authRoutes = require('./routes/authRoute');
 const jobApplicationRoutes = require('./routes/jobApplicationRoute');
 const jobRoutes = require("./routes/jobRoute");
-
-
-
-
-
-
 
 
 
@@ -165,16 +151,11 @@ mongoose
 
 
 
-
-
 // Error-handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
-
-
-
 
 
 
