@@ -1,11 +1,13 @@
 const express = require("express");
 const { getJobs, createJob } = require("../controllers/jobController");
+const { verifyAdmin } = require("../middlewares/authMiddleware");
+const validateJob = require("../middlewares/validateJob");
 const router = express.Router();
 
-// GET all jobs with optional filters
+
 router.get("/", getJobs);
 
-// POST a new job (Admin only)
-router.post("/", createJob);
+
+router.post("/", verifyAdmin, validateJob, createJob);
 
 module.exports = router;
