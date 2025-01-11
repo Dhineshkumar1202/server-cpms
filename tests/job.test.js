@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../index'); // Your Express app
+const app = require('../index'); 
 
 describe('Jobs API', () => {
   it('should fetch all jobs', async () => {
