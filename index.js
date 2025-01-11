@@ -144,12 +144,13 @@ app.use(errorHandler);
 
 // MongoDB connection
 mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB Connected'))
-    .catch((err) => {
-        console.error('DB Connection Error:', err.message);
-        process.exit(1);
-    });
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch((err) => {
+    console.error('DB Connection Error:', err.message);
+    process.exit(1); // Exit the process on failure
+  });
+
 
 
 
