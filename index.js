@@ -148,7 +148,7 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch((err) => {
     console.error('DB Connection Error:', err.message);
-    process.exit(1); // Exit the process on failure
+    process.exit(1); 
   });
 
 
