@@ -6,6 +6,6 @@ const validateJob = require("../middlewares/validateJob");
 const router = express.Router();
 
 router.get("/", authMiddleware, getJobs);
-router.post("/", authMiddleware, verifyAdmin, validateJob, createJob);
+router.post("/add", authMiddleware, verifyAdmin, validateJob, createJob);
 
 module.exports = router;
