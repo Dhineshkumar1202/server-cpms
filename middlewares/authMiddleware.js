@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 // const { JWT_SECRET } = require("../config/config");
+require("dotenv").config;
 
 // Middleware to verify any authenticated user
 const authMiddleware = (req, res, next) => {
@@ -11,7 +12,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
     req.user = decoded; // Attach the user details to the request object
     next();
   } catch (error) {
