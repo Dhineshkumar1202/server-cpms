@@ -27,18 +27,31 @@ router.post("/signup", async (req, res) => {
             role,
         });
 
+        // Role-based additional data validation
         if (role === "student") {
+            if (!additionalData.course || !additionalData.year) {
+                return res.status(400).json({ message: "Course and Year are required for students" });
+            }
+
             await Student.create({
                 userId: user._id,
                 course: additionalData.course,
                 year: additionalData.year,
             });
         } else if (role === "admin") {
+            if (!additionalData.department) {
+                return res.status(400).json({ message: "Department is required for admins" });
+            }
+
             await Admin.create({
                 userId: user._id,
                 department: additionalData.department,
             });
         } else if (role === "company") {
+            if (!additionalData.companyName || !additionalData.website) {
+                return res.status(400).json({ message: "Company Name and Website are required for companies" });
+            }
+
             await Company.create({
                 userId: user._id,
                 companyName: additionalData.companyName,
@@ -49,7 +62,7 @@ router.post("/signup", async (req, res) => {
         res.status(201).json({ message: "User created successfully", user });
     } catch (error) {
         console.error("Error creating user:", error);
-        res.status(400).json({ message: "Error creating user", error });
+        res.status(500).json({ message: "Error creating user", error });
     }
 });
 
