@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config/config");
+// const { JWT_SECRET } = require("../config/config");
 
 // Middleware to verify any authenticated user
 const authMiddleware = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
+  console.log(token);
+  
   if (!token) {
     return res.status(401).json({ message: "No token provided" });
   }
@@ -13,6 +15,8 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded; // Attach the user details to the request object
     next();
   } catch (error) {
+    console.log(error);
+    
     res.status(401).json({ message: "Invalid token" });
   }
 };
