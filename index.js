@@ -138,7 +138,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use(errorHandler);
-app.use("/api/profile", profileRoutes);
+app.use("/api", profileRoutes);
 
 
 
