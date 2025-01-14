@@ -123,6 +123,7 @@ const authRoutes = require('./routes/authRoute');
 const jobApplicationRoutes = require('./routes/jobApplicationRoute');
 const jobRoutes = require("./routes/jobRoute");
 const errorHandler = require("./middlewares/errorHandler");
+const profileRoutes = require("./routes/profileRoute");
 
 
 
@@ -137,6 +138,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use(errorHandler);
+app.use("/api/profile", profileRoutes);
 
 
 
