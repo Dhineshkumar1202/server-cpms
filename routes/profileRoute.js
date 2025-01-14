@@ -1,5 +1,5 @@
 const express = require('express');
-const Student = require('../models/studentModel'); // Correct path to your studentModel
+const Student = require('../models/studentModel'); 
 const router = express.Router();
 
 // Create a student profile
