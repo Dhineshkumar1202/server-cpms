@@ -16,7 +16,7 @@ const studentSchema = new mongoose.Schema({
         type: String, 
         required: false, 
         default: '' 
-    }, // Student's contact number
+    }, 
     academicRecords: {
         grades: { type: String, default: '' }, 
         achievements: { type: [String], default: [] }, 
@@ -24,7 +24,7 @@ const studentSchema = new mongoose.Schema({
     resume: { 
         type: String, 
         default: '' 
-    }, // File path or URL for the resume
+    }, 
     applications: [
         {
             status: { 
