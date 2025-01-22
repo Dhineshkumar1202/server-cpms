@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const jobSchema = new mongoose.Schema(
     {
       title: { type: String, required: true },
@@ -10,3 +12,5 @@ const jobSchema = new mongoose.Schema(
     { timestamps: true }
   );
   
+
+module.exports = mongoose.model("Job", jobSchema);
