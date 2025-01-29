@@ -17,6 +17,7 @@ const upload = multer({ storage });
 
 // Submit a Job Application
 router.post("/", upload.single("file"), async (req, res) => {
+
   try {
     const { studentId, jobId, coverLetter } = req.body;
 
