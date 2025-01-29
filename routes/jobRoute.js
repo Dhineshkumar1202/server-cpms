@@ -3,7 +3,7 @@ const router = express.Router();
 const Job = require("../models/jobModel");
 
 // Create a new Job Posting (Admin only)
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
     const { title, description, subjectCategory, company, location, postedBy } = req.body;
 
