@@ -139,6 +139,7 @@ app.use('/api/job-applications', jobApplicationRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use(errorHandler);
 app.use("/api", profileRoutes);
+app.use("/uploads", express.static("uploads"));
 
 
 
