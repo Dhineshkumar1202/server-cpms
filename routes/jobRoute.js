@@ -27,5 +27,15 @@ router.post("/create", async (req, res) => {
     res.status(500).json({ message: "Error posting job", error: error.message });
   }
 });
+router.get("/get", async (req, res) => {
+  try {
+    const jobs = await Job.find();
+    res.status(200).json(jobs);
+  } catch (error) {
+    console.error("Error fetching Jobs not find:", error);
+    res.status(500).json({ message: "Error fetching jobs", error: error.message });
+  }
+});
+
 
 module.exports = router;
