@@ -1,25 +1,25 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const jwt = require('jsonwebtoken');
 
-const authMiddleware = async (req, res, next) => {
-  const token = req.header("Authorization");
+const authenticate = (req, res, next) => {
+  const authHeader = req.header('Authorization');
 
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  // Debugging: Log received headers
+  console.log("Received Auth Header:", authHeader);
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password");
+    req.user = decoded; 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token is invalid" });
+    console.error("Token verification error:", error.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 
-const verifyAdmin = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Forbidden: Admins only" });
-  }
-  next();
-};
-
-module.exports = { authMiddleware, verifyAdmin };
+module.exports = authenticate;
